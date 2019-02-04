@@ -10,6 +10,8 @@ import AlertIcon from 'grommet/components/icons/base/Alert'
 
 import { rename } from 'app/lib/func'
 
+const interval = 500
+
 const query = gql`
   query Messages ($channel: String!) {
     messages: messageQuery(
@@ -54,7 +56,7 @@ const normalize = pipe(
 
 const MessagesContainer = ({ children, channel }) => (
   channel && channel.tid ? (
-    <Query query={ query } variables={ { channel: channel.tid } }>
+    <Query query={ query } variables={ { channel: channel.tid } } pollInterval={ interval }>
       { pipe(normalize, children) }
     </Query>
   ) : (
