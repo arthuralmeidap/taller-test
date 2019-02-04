@@ -10,7 +10,6 @@ import Link from 'next/link'
 import { HashLoader } from 'react-spinners'
 import App from 'grommet/components/App'
 import ChatIcon from 'grommet/components/icons/base/Chat'
-import RefreshIcon from 'grommet/components/icons/base/Refresh'
 import AddCircleIcon from 'grommet/components/icons/base/Add'
 import UserIcon from 'grommet/components/icons/base/User'
 import LogoutIcon from 'grommet/components/icons/base/Logout'
@@ -116,7 +115,6 @@ const ChatRoom = ({ url, url: { query: { channel = 'general' } } }) => (
                             { '#' + channel }
                           </Title>
 
-                          <Button icon={ <RefreshIcon /> } onClick={ () => refetch() } />
                         </StyledRoomHeader>
 
                         <Box pad='medium' flex='grow'>
