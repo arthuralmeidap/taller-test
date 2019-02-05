@@ -90,7 +90,10 @@ const ChatRoom = ({ url, url: { query: { channel = 'general' } } }) => (
                   <Box flex='grow' justify='start'>
                     <Menu primary>
                       { channels.map(({ name }) => (
-                        <Link key={ name } prefetch href={ `/messages/${name}` }>
+                        <Link key={ name } prefetch as={ `/messages/${name}` } href={ {
+                          pathname: '/channel',
+                          query: { channel: name },
+                        } }>
                           <Anchor className={ channel === name ? 'active' : '' }>
                             # <b>{ name }</b>
                           </Anchor>
@@ -141,7 +144,7 @@ const ChatRoom = ({ url, url: { query: { channel = 'general' } } }) => (
                               { ({ handleSubmit }) => (
                                 <form onSubmit={ handleSubmit }>
                                   <NewMessageContainer.Message
-                                    placeHolder='Message #general'
+                                    placeHolder={ `Message #${channel}` }
                                     component={ StyledTextInput }
                                   />
                                 </form>
