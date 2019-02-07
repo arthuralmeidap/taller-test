@@ -9,6 +9,7 @@ const isEmpty = value => typeof value === 'undefined' ||
 
 const isNotEmpty = R.complement(isEmpty)
 const isNotEmail = value => !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(value)
+const isNotMachineName = value => !/^[a-z0-9_]+$/.test(value)
 // const isNotNumeric = value => !/^(\d+(\.\d+)?)$/.test(value)
 // const isNotInteger = value => Number(value) !== Math.floor(value)
 // const isNotURL = R.complement(isURL)
@@ -16,6 +17,8 @@ const isNotEmail = value => !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(va
 /*
  * Validation rules.
  */
+
+export const machine = value => isNotMachineName(value) && 'Must contains only lower case alphanumeric digits without accents and underscore'
 
 export const nil = () => undefined
 export const required = value => isEmpty(value) && 'Required'

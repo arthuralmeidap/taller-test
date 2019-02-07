@@ -60,6 +60,7 @@ import ChannelsContainer from 'app/modules/channel/containers/ChannelsContainer'
 import MessagesContainer from 'app/modules/channel/containers/MessagesContainer'
 import NewMessageContainer from 'app/modules/channel/containers/NewMessageContainer'
 import NewChannelContainer from 'app/modules/channel/containers/NewChannelContainer'
+import { machine } from '../src/lib/form/validation'
 
 const ChatRoom = ({ url, url: { query: { channel = 'general' } } }) => (
   <CurrentUserContainer>
@@ -79,9 +80,15 @@ const ChatRoom = ({ url, url: { query: { channel = 'general' } } }) => (
                       { create => (
                         <AddChannelButton
                           icon={ <AddCircleIcon /> }
-                          onClick={ () => create(
-                            window.prompt('Name your new channel')
-                          ) }
+                          onClick={ () => {
+                            const channelName = window.prompt('Name your new channel')
+                            const error = machine(channelName)
+                            if (error !== false) {
+                              window.alert(error)
+                              return undefined
+                            }
+                            create(channelName)
+                          } }
                         />
                       ) }
                     </NewChannelContainer>
