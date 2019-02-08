@@ -21,7 +21,7 @@ const mutation = gql`
 
 // @TODO: implement optimistic query on channels?
 
-const NewMessageContainer = ({ children }) => (
+const NewChannelContainer = ({ children }) => (
   <Mutation mutation={ mutation } refetchQueries={ ['Channels'] }>
     { mutate => (
       children(name => {
@@ -33,8 +33,8 @@ const NewMessageContainer = ({ children }) => (
   </Mutation>
 )
 
-NewMessageContainer.propTypes = {
+NewChannelContainer.propTypes = {
   children: func,
 }
 
-export default NewMessageContainer
+export default NewChannelContainer
