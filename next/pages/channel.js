@@ -60,13 +60,14 @@ import ChannelsContainer from 'app/modules/channel/containers/ChannelsContainer'
 import MessagesContainer from 'app/modules/channel/containers/MessagesContainer'
 import NewMessageContainer from 'app/modules/channel/containers/NewMessageContainer'
 import NewChannelContainer from 'app/modules/channel/containers/NewChannelContainer'
+import SignoutContainer from 'app/modules/auth/containers/SignoutContainer'
 
 const ChatRoom = ({ url, url: { query: { channel = 'general' } } }) => (
   <CurrentUserContainer>
     { ({ user }) => (
       <ChannelsContainer>
         { ({ loading, channels }) => (
-          (loading && !channels.length) ? <LoadingComponent /> : (
+          ((loading && !channels.length) || (!user || !user.uid)) ? <LoadingComponent /> : (
             <App centered={ false }>
               <Split fixed flex='right'>
                 <Sidebar colorIndex='neutral-1'>
@@ -101,60 +102,61 @@ const ChatRoom = ({ url, url: { query: { channel = 'general' } } }) => (
 
                   <Footer pad='medium'>
                     <Button icon={ <UserIcon /> } onClick={ console.log } />
-                    <Button icon={ <LogoutIcon /> } onClick={ console.log } />
+                    { user && user.uid ? (
+                      <SignoutContainer user={ user }>
+                        { logout => (<Button icon={ <LogoutIcon /> } onClick={ () => logout() } />) }
+                      </SignoutContainer>
+                    ) : null }
                   </Footer>
                 </Sidebar>
 
-                { !user || !user.uid ? (
-                  <LoadingComponent />
-                ) : (
-                  <MessagesContainer channel={ channels.find(({ name }) => name === channel) }>
-                    { ({ loading, refetch, messages }) => (
-                      <Box full='vertical'>
-                        <StyledRoomHeader pad={ { vertical: 'small', horizontal: 'medium' } } justify='between'>
-                          <Title>
-                            { '#' + channel }
-                          </Title>
+                <MessagesContainer channel={ channels.find(({ name }) => name === channel) }>
+                  { ({ loading, refetch, messages }) => (
+                    <Box full='vertical'>
+                      <StyledRoomHeader pad={ { vertical: 'small', horizontal: 'medium' } } justify='between'>
+                        <Title>
+                          { '#' + channel }
+                        </Title>
 
-                          <Button icon={ <RefreshIcon /> } onClick={ () => refetch() } />
-                        </StyledRoomHeader>
+                        <Button icon={ <RefreshIcon /> } onClick={ () => refetch() } />
+                      </StyledRoomHeader>
 
-                        <Box pad='medium' flex='grow'>
-                          { loading ? 'Loading...' : (
-                            messages.length === 0 ? 'No one talking here yet :(' : (
-                              messages.map(({ id, author, message }) => (
-                                <Box key={ id } pad='small' credit={ author }>
-                                  <StyledAuthor>{ author }</StyledAuthor>
-                                  <StyledMessage>{ message }</StyledMessage>
-                                </Box>
-                              ))
-                            )
-                          ) }
-                        </Box>
-
-                        <Box pad='medium' direction='column'>
-                          { user && user.uid ? (
-                            <NewMessageContainer
-                              user={ user }
-                              channel={ channels.find(({ name }) => name === channel) }
-                            >
-                              { ({ handleSubmit }) => (
-                                <form onSubmit={ handleSubmit }>
-                                  <NewMessageContainer.Message
-                                    placeHolder='Message #general'
-                                    component={ StyledTextInput }
-                                  />
-                                </form>
-                              ) }
-                            </NewMessageContainer>
-                          ) : (
-                            'Log in to post messages'
-                          ) }
-                        </Box>
+                      <Box pad='medium' flex='grow'>
+                        { loading ? 'Loading...' : (
+                          messages.length === 0 ? 'No one talking here yet :(' : (
+                            messages.map(({ id, author, message }) => (
+                              <Box key={ id } pad='small' credit={ author }>
+                                <StyledAuthor>{ author }</StyledAuthor>
+                                <StyledMessage>{ message }</StyledMessage>
+                              </Box>
+                            ))
+                          )
+                        ) }
                       </Box>
-                    ) }
-                  </MessagesContainer>
-                ) }
+
+                      <Box pad='medium' direction='column'>
+                        { user && user.uid ? (
+                          <NewMessageContainer
+                            user={ user }
+                            channel={ channels.find(({ name }) => name === channel) }
+                          >
+                            { ({ handleSubmit }) => (
+                              <form onSubmit={ handleSubmit }>
+                                <NewMessageContainer.Message
+                                  placeHolder='Message #general'
+                                  component={ StyledTextInput }
+                                />
+                              </form>
+                            ) }
+                          </NewMessageContainer>
+                        ) : (
+                          'Log in to post messages'
+                        ) }
+                      </Box>
+                    </Box>
+                  ) }
+                </MessagesContainer>
+                }
 
               </Split>
             </App>
